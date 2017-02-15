@@ -2,7 +2,8 @@
 More reliable implementation of the Matlab option "expand axes to fill figure"
 More reliable implementation of the option "expand axes to fill figure" in the Export Setup... settings. Works with multiple subplots and usually does not distort objects such as colorbars.
 This function attempts to automatically remove white space in figures by expanding the axes objects to fill the figure. The available option in the "export setup" figure menu sometimes distorts the axes and often does not work at all if there is more than one axes or a colorbar. The common fix is to manually change the position of each axes, which can be a tedious process. This function attempts to automate the process while keeping the syntax as simple as possible. It automatically removes the white space of most figures with multiple subplots, superimpozed axes objects and colorbars without distorting the axes.
-The zip file contains the function and a script with examples of use.
+#
+
 Syntax:
        expandaxes(h)
        expandaxes(h, fHor, fVer) - For manual adjustment of the distance
