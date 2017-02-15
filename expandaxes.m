@@ -115,7 +115,7 @@ AX = findobj(h,'type','axes');
 
 %% identify suptitle objects
 spind = true(size(AX));
-for i = 1:length(AX)
+for i = 1:numel(AX)
     ax = AX(i);
     STa = findobj(ax,'tag','suptitle');
     if ~isempty(STa)
@@ -123,7 +123,7 @@ for i = 1:length(AX)
         break
     end
 end
-if sum(spind) < length(AX)
+if sum(spind) < numel(AX)
     % determine position of suptitle
     AX = AX(spind);
     supt = findall(STa,'type','text');
@@ -141,7 +141,7 @@ end
 
 
 %% save previous position and reset in case expandaxes was used on figure before
-for i = 1:length(AX)
+for i = 1:numel(AX)
     if strcmp(AX(i).Tag,'expandedaxes') % reset to previous positions
         AX(i).Position = AX(i).UserData.Position;
         AX(i).OuterPosition = AX(i).UserData.OuterPosition;
@@ -161,12 +161,12 @@ end
 superimposed = false(size(AX)); % true/false vector for subplots with superimpozed axes
 % index for subs struct axes corresponding with AX(i): [j, k] for [subs(j), subs(j).AX(k)]
 subsind = zeros(size(AX,1),2);
-if numsub ~= length(AX) % at least one overlay?
-   for i = 1:length(AX)
+if numsub ~= numel(AX) % at least one overlay?
+   for i = 1:numel(AX)
        pos = AX(i).Position;
-       for j = 1:length(subs)
-           if length(subs(j).AX) > 1
-               for k = 1:length(subs(j).AX)
+       for j = 1:numel(subs)
+           if numel(subs(j).AX) > 1
+               for k = 1:numel(subs(j).AX)
                    if sum(pos-subs(j).AX(k).Position) == 0
                        superimposed(i) = true;
                        subsind(i,1) = j;
@@ -179,15 +179,15 @@ if numsub ~= length(AX) % at least one overlay?
 end
 
 %% delete blank axes labels
-for i = 1:length(AX)
+for i = 1:numel(AX)
     ax = AX(i);
-    if length(strfind(ax.YLabel.String,' ')) == length(ax.YLabel.String)
+    if numel(strfind(ax.YLabel.String,' ')) == numel(ax.YLabel.String)
         ax.YLabel.String = '';
     end
-    if length(strfind(ax.XLabel.String,' ')) == length(ax.XLabel.String)
+    if numel(strfind(ax.XLabel.String,' ')) == numel(ax.XLabel.String)
         ax.XLabel.String = '';
     end
-    if length(strfind(ax.Title.String,' ')) == length(ax.Title.String)
+    if numel(strfind(ax.Title.String,' ')) == numel(ax.Title.String)
         ax.Title.String = '';
     end
 end
@@ -198,9 +198,9 @@ end
 tmpt = findall(h,'tag','templabel');
 delete(tmpt); % delete previous temporary labels
 spn = findall(h,'tag','subplotnumber');
-tmpyl = repmat(text(),length(spn),1);
+tmpyl = repmat(text(),numel(spn),1);
 tmptl = tmpyl;
-for i = 1:length(spn)
+for i = 1:numel(spn)
     if strcmp(AX(i).YLabel.String,'') % temporary ylabel
         tmpyl(i) = ylabel(AX(i),'temporary ylabel','FontSize',AX(i).FontSize+0.5,'Tag','templabel');
     end
@@ -212,7 +212,7 @@ end
 % find colorbars
 cbr = ~isempty(findobj(h,'type','colorbar'));
 cTF = false(size(AX)); % true/false vector for later recreation of colorbars
-if numsub > 1 % for multiple subplots
+if numel(AX) > 1 % for multiple subplots
     %% delete colorbars and re-add later with same properties
     % Since colorbars are not axes children, the size of the axes adjusts
     % when creating a colorbar, but colorbars don't affect the TightInset.
@@ -222,9 +222,9 @@ if numsub > 1 % for multiple subplots
             CH = CH(spind);
         end
         chTF = false(size(CH));
-        cbrPs = repmat(struct(),1,length(AX)); % struct for saving colorbar properties
+        cbrPs = repmat(struct(),1,numel(AX)); % struct for saving colorbar properties
         ct = 1;
-        for i = 1:length(chTF)
+        for i = 1:numel(chTF)
             type = class(CH(i));
             ti = strfind(type,'.');
             type = type(ti(end)+1:end);
@@ -241,9 +241,9 @@ if numsub > 1 % for multiple subplots
     
     %% MANIPULATION OF POSTION VECTORS
     % determine OuterPositions
-    OPs = zeros(length(AX),4); % OuterPosition of each axes
+    OPs = zeros(numel(AX),4); % OuterPosition of each axes
     TIs = OPs; % TightInsets of each axes
-    for i = 1:length(AX)
+    for i = 1:numel(AX)
         ax = AX(i);
         OPs(i,:) = ax.OuterPosition;
         TIs(i,:) = ax.TightInset;
@@ -312,7 +312,7 @@ if numsub > 1 % for multiple subplots
     OPs(:,3) = width + fullLine;
     
     %% AXES RESIZING
-    for i = 1:length(AX)
+    for i = 1:numel(AX)
         ax = AX(i);
         ax.OuterPosition = OPs(i,:);
         OP = OPs(i,:);
@@ -335,7 +335,7 @@ if numsub > 1 % for multiple subplots
         end
     end
     %% re-add colorbars
-    for i = 1:length(AX)
+    for i = 1:numel(AX)
         ax = AX(i);
         TI = ax.TightInset;
         if cTF(i)
@@ -394,15 +394,15 @@ delete(tmptl)
 
 %% Correct positions of subplots with multiple superimpozed axes
 for i = 1:numsub
-    if length(subs(i).AX) > 1
+    if numel(subs(i).AX) > 1
         POS = [0, 0, 1000, 1000]; % final position vector for subplot
-        for j = 1:length(subs(i).AX)
+        for j = 1:numel(subs(i).AX)
             POS(1) = max([POS(1); subs(i).AX(j).Position(1)]);
             POS(2) = max([POS(2); subs(i).AX(j).Position(2)]);
             POS(3) = min([POS(3); subs(i).AX(j).Position(3)]);
             POS(4) = min([POS(4); subs(i).AX(j).Position(4)]);
         end
-        for j = 1:length(subs(i).AX)
+        for j = 1:numel(subs(i).AX)
             subs(i).AX(j).Position = POS;
         end
     end
@@ -451,9 +451,9 @@ function expandaxesColorBarCorr(h)
 % correction of expandaxes colorbar positioning
 [s, ~, ~, ~] = spidentify(h);
 C2 = findall(h,'Type','colorbar');
-for in = 1:length(s)
+for in = 1:numel(s)
     if s(in).nc
-        for in2 = 1:length(C2)
+        for in2 = 1:numel(C2)
             % find out which colorbar object belongs to axes
             C_AXES2 = get(C2(in2),'axes');
             if sum(C_AXES2.Position - s(in).AX(1).Position) == 0
@@ -468,7 +468,7 @@ for in = 1:length(s)
             c.Position(1) = c.Position(1) - (dif-0.02);
             % restore position of axes
             pause(0.001)
-            for in2 = 1:length(s(in).AX)
+            for in2 = 1:numel(s(in).AX)
                 s(in).AX(in2).Position(3) = p;
             end
         end
@@ -514,14 +514,14 @@ end
 AX = findobj(h,'type','axes'); % axes handles
 % eliminate suptitle objects
 ind = true(size(AX));
-for i = 1:length(AX)
+for i = 1:numel(AX)
     if ~isempty(findall(AX(i),'tag','suptitle'))
         ind(i) = false;
     end
 end
 AX = AX(ind);
 C = findall(h,'Type','colorbar'); % colorbar handles
-numax = length(AX);
+numax = numel(AX);
 chk = zeros(numax,1,'single');
 for i = 1:numax
     ax = AX(i);
@@ -529,10 +529,10 @@ for i = 1:numax
     chk(i) = sum([poschk(1); poschk(2)]);
 end
 ind = true(size(AX));
-if length(unique(chk)) ~= length(chk)
+if numel(unique(chk)) ~= numel(chk)
     ind = false(size(chk));
     un = unique(chk);
-    for i = 1:length(chk)
+    for i = 1:numel(chk)
         if  ~isempty(find(un == chk(i),1))
             un(find(un == chk(i),1)) = [];
             ind(i) = true;
@@ -552,8 +552,8 @@ for i = 1:numsub
     ax = AX(subsubind);
     subs(i).AX = ax;
     subs(i).nc = 0; % amount of colorbars
-    for j = 1:length(ax)
-        for k = 1:length(C)
+    for j = 1:numel(AX)
+        for k = 1:numel(C)
             C_AXES = get(C(k),'axes');
             if sum(C_AXES.Position - ax.Position) == 0 && ~strcmp(C(k).YLabel.String,'')
                 subs(i).nc = subs(i).nc + 1;
