@@ -212,7 +212,7 @@ end
 % find colorbars
 cbr = ~isempty(findobj(h,'type','colorbar'));
 cTF = false(size(AX)); % true/false vector for later recreation of colorbars
-if numel(AX) > 1 % for multiple subplots
+if numel(AX) > 1 % for multiple axes
     %% delete colorbars and re-add later with same properties
     % Since colorbars are not axes children, the size of the axes adjusts
     % when creating a colorbar, but colorbars don't affect the TightInset.
