@@ -91,6 +91,9 @@ function expandaxes(h, varargin)
 %       - 04/02/2016: Fixed issues with docked figures by undocking them
 %                     and restoring the WindowStyle at the end.
 %       - 06/04/2017: Added undo option.
+%                     Moved position from h.UserData.value to
+%                     h.UserData.expandaxesData.value so as to make clearer
+%                     that data comes from expandaxes function.
 %% parse inputs
 if nargin < 1
     h = gcf;
