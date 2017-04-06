@@ -1,4 +1,4 @@
-function expandaxes(h, fHor, fVer)
+function expandaxes(h, varargin)
 % expandaxes: More reliable implementation of the option "expand axes to
 % fill figure" in the Export Setup... settings. Works with multiple
 % subplots and usually does not distort objects such as colorbars.
@@ -6,7 +6,9 @@ function expandaxes(h, fHor, fVer)
 % Syntax:
 %        expandaxes(h)
 %        expandaxes(h, fHor, fVer) - For manual adjustment of the distance
-%                                   between subplots
+%                                    between subplots
+%        expandaxes(h, 'Undo', true) - For undoing an expandaxes operation
+%                                      on a figure h
 % 
 % Input arguments:
 %        - h:    Figure handle
@@ -87,7 +89,8 @@ function expandaxes(h, fHor, fVer)
 %                             positions before re-applying this function.
 %                     Added small improvements to colorbar handling.
 %       - 04/02/2016: Fixed issues with docked figures by undocking them
-%                     restoring the WindowStyle at the end.
+%                     and restoring the WindowStyle at the end.
+%       - 06/04/2017: Added undo option.
 %% parse inputs
 if nargin < 1
     h = gcf;
@@ -98,7 +101,13 @@ elseif nargin == 1
     fVer = 1;
 elseif nargin == 2
     fVer = 1;
+    if ischar(varargin{1})
+        fHor = 1;
+    end
 end
+p = inputParser;
+addOptional(p, 'Undo', false, @islogical)
+parse(p, varargin{:});
 
 % save WindowStyle and undock figure
 Wstyle = h.WindowStyle;
@@ -143,17 +152,24 @@ end
 %% save previous position and reset in case expandaxes was used on figure before
 for i = 1:numel(AX)
     if strcmp(AX(i).Tag,'expandedaxes') % reset to previous positions
-        AX(i).Position = AX(i).UserData.Position;
-        AX(i).OuterPosition = AX(i).UserData.OuterPosition;
-        AX(i).Tag = AX(i).UserData.Tag;
+        AX(i).Position = AX(i).UserData.expandaxesData.Position;
+        AX(i).OuterPosition = AX(i).UserData.expandaxesData.OuterPosition;
+        AX(i).Tag = AX(i).UserData.expandaxesData.Tag;
+        if p.Results.Undo
+            AX(i).UserData = rmfield(AX(i).UserData, 'expandaxesData');
+        end
     end
-    % save position data in figure
-    AX(i).UserData.Tag = AX(i).Tag;
-    AX(i).UserData.Position = AX(i).Position;
-    AX(i).UserData.OuterPosition = AX(i).OuterPosition;
-    AX(i).Tag = 'expandedaxes';
+    if ~p.Results.Undo
+        % save position data in figure
+        AX(i).UserData.expandaxesData.Tag = AX(i).Tag;
+        AX(i).UserData.expandaxesData.Position = AX(i).Position;
+        AX(i).UserData.expandaxesData.OuterPosition = AX(i).OuterPosition;
+        AX(i).Tag = 'expandedaxes';
+    end
 end
-
+if p.Results.Undo
+    return;
+end
 
 %% Check for superimpozed axes, such as in plotyy
 % identify subplots with multiple axes (e.g. plotyy)
