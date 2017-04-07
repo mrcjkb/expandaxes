@@ -94,6 +94,7 @@ function expandaxes(h, varargin)
 %                     Moved position from h.UserData.value to
 %                     h.UserData.expandaxesData.value so as to make clearer
 %                     that data comes from expandaxes function.
+%       - 07/04/2017: Fixed bug with new syntax.
 %% parse inputs
 if nargin < 1
     h = gcf;
@@ -106,6 +107,18 @@ elseif nargin == 2
     fVer = 1;
     if ischar(varargin{1})
         fHor = 1;
+    else % Make compatible name value pair syntax
+        varargin = {'Undo', false};
+    end
+else % Make backward-compatible with old and new syntax
+    if isnumeric(varargin{1})
+        fHor = varargin{1};
+        if isnumeric(varargin{2})
+            fVer = varargin{2};
+            varargin = varargin(3:end);
+        else
+            varargin = varargin(2:end);
+        end
     end
 end
 p = inputParser;
