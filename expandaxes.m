@@ -108,6 +108,7 @@ elseif nargin == 2
     if ischar(varargin{1})
         fHor = 1;
     else % Make compatible name value pair syntax
+        fHor = varargin{1};
         varargin = {'Undo', false};
     end
 else % Make backward-compatible with old and new syntax
