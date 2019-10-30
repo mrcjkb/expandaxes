@@ -511,7 +511,7 @@ end
 end
 
 %% Subfunction for superimpozed axes
-function [subs, numsub, nHor, nVer] = spidentify(h)
+function [subs, numsub, nVer, nHor] = spidentify(h)
 % spidentify: Indentifies subplots in  figure h. Some figures contain axes
 % that are superimpozed (e. g. plotyy), so that more axes objects than
 % subplots can be present. With this function, superimpozed axes objects can
@@ -520,6 +520,7 @@ function [subs, numsub, nHor, nVer] = spidentify(h)
 %
 % Syntax: subs = spidentify(h);
 %         [subs, numsub] = spidentify(h);
+%         [subs, numsub, nVer, nHor] = spidentify(h);
 %
 % Input arguments:
 %
@@ -527,7 +528,7 @@ function [subs, numsub, nHor, nVer] = spidentify(h)
 %
 % Output arguments:
 %
-%    subs:   Struct with the identified subplots as fields. Each fiel is a
+%    subs:   Struct with the identified subplots as fields. Each field is a
 %            1xN axes object that corresponds with the respective subplot.
 % 
 %            subs(i)         i = index of the subplot
@@ -535,8 +536,8 @@ function [subs, numsub, nHor, nVer] = spidentify(h)
 %                            superimpozed axes
 %            subs(i).nc      Number of colorbars contained in subplot i
 %    numsub: Number of subplots in the figure
-%    nHor:   Number of subplots in horizontal direction
 %    nVer:   Number of subplots in vertical direction
+%    nHor:   Number of subplots in horizontal direction
 %
 %
 % Author: Marc Jakobi, HTW Berlin, 06/17/2016
