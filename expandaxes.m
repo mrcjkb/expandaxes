@@ -511,7 +511,7 @@ end
 end
 
 %% Subfunction for superimpozed axes
-function [subs, numsub, nVer, nHor] = spidentify(h)
+function [subs, numsub, nHor, nVer] = spidentify(h)
 % spidentify: Indentifies subplots in  figure h. Some figures contain axes
 % that are superimpozed (e. g. plotyy), so that more axes objects than
 % subplots can be present. With this function, superimpozed axes objects can
@@ -520,7 +520,7 @@ function [subs, numsub, nVer, nHor] = spidentify(h)
 %
 % Syntax: subs = spidentify(h);
 %         [subs, numsub] = spidentify(h);
-%         [subs, numsub, nVer, nHor] = spidentify(h);
+%         [subs, numsub, nHor, nVer] = spidentify(h);
 %
 % Input arguments:
 %
@@ -615,8 +615,8 @@ if nargout == 3 || nargout == 4
             nVer = 1;
         end
     else
-        nVer = find(rights > 0.1, 2);
-        nHor = find(lefts > 0.1, 2);
+        nHor = find(rights > 0.1, 2);
+        nVer = find(lefts > 0.1, 2);
         chk = primes(100); chk = chk(chk ~= numsub);
         if sum(numsub./chk == round(numsub./chk)) > 0
             nVer = nVer(2) - 1;
