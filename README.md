@@ -5,7 +5,7 @@
 >
 > __NOTE:__
 >
-> Since I no longer use Matlab, I cannot actively maintain this model.
+> Since I no longer use Matlab, I cannot actively maintain this repo.
 > I will gladly accept PRs, as long as I can review them without Matlab.
 
 
